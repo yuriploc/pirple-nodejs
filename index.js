@@ -18,12 +18,18 @@ const server = http.createServer((req, res) => {
   // get the HTTP method
   const method = req.method.toLowerCase();
 
+  // get the headers as an object
+  const headers = req.headers;
+
   // send the response
   res.end('hello there\n');
 
   // log the path requested
   console.log(
-    `trimmedPath: ${trimmedPath}, method: ${method}, query string: ${queryStringObject}`
+    `trimmedPath: ${trimmedPath},
+    method: ${method},
+    query string: ${queryStringObject},
+    headers: ${JSON.stringify(headers)}`
   );
 });
 
