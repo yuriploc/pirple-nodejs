@@ -12,11 +12,19 @@ const server = http.createServer((req, res) => {
   const path = parsedUrl.pathname;
   const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
+  // get the query string as a URLSearchParams object
+  const queryStringObject = parsedUrl.searchParams;
+
+  // get the HTTP method
+  const method = req.method.toLowerCase();
+
   // send the response
   res.end('hello there\n');
 
   // log the path requested
-  console.log(`trimmedPath: ${trimmedPath}`);
+  console.log(
+    `trimmedPath: ${trimmedPath}, method: ${method}, query string: ${queryStringObject}`
+  );
 });
 
 // start the server and have it listen on port 4500
