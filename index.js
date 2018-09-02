@@ -1,5 +1,6 @@
 const http = require('http');
 const { URL } = require('url');
+const { StringDecoder } = require('string_decoder');
 
 // the server should respond to all requests with a string
 const server = http.createServer((req, res) => {
@@ -21,16 +22,32 @@ const server = http.createServer((req, res) => {
   // get the headers as an object
   const headers = req.headers;
 
-  // send the response
-  res.end('hello there\n');
+  // get the payload, if there is any
+  const decoder = new StringDecoder('utf-8');
+  let buffer = '';
 
-  // log the path requested
-  console.log(
-    `trimmedPath: ${trimmedPath},
-    method: ${method},
-    query string: ${queryStringObject},
-    headers: ${JSON.stringify(headers)}`
-  );
+  req.on('data', data => {
+    buffer += decoder.write(data);
+  });
+
+  req.on('end', _ => {
+    buffer += decoder.end();
+    // send the response
+    res.end('hello there\n');
+    // log the path requested
+    console.log(
+      `trimmedPath: ${trimmedPath},
+      method: ${method},
+      query string: ${queryStringObject},
+      headers: ${JSON.stringify(headers)}
+      payload: ${buffer}`
+    );
+  });
+
+  req.on('error', error => {
+    console.error(error.stack);
+    res.end('ERROR\n');
+  });
 });
 
 // start the server and have it listen on port 4500
