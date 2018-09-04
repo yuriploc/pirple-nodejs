@@ -1,6 +1,7 @@
 const http = require('http');
 const { URL } = require('url');
 const { StringDecoder } = require('string_decoder');
+const config = require('./config');
 
 // the server should respond to all requests with a string
 const server = http.createServer((req, res) => {
@@ -77,8 +78,10 @@ const server = http.createServer((req, res) => {
   });
 });
 
-// start the server and have it listen on port 4500
-server.listen(4500, _ => console.log('server ONLINE on port 4500'));
+// start the server
+server.listen(config.port, _ =>
+  console.log(`server in ${config.envName} ONLINE on port ${config.port}`)
+);
 
 // define router handlers
 const handlers = {};
