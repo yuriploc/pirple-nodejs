@@ -2,12 +2,14 @@ const environments = {};
 
 // default
 environments.staging = {
-  port: 3000,
+  httpPort: 3000,
+  httpsPort: 3001,
   envName: 'staging'
 };
 
 environments.production = {
-  port: 5000,
+  httpPort: 5000,
+  httpsPort: 5002,
   envName: 'production'
 };
 
@@ -21,4 +23,5 @@ const environmentToExport =
     ? environments[currentEnv]
     : environments.staging;
 
+// don't export everything
 module.exports = environmentToExport;

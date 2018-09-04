@@ -1,13 +1,39 @@
 const http = require('http');
+const https = require('https');
 const { URL } = require('url');
 const { StringDecoder } = require('string_decoder');
+const fs = require('fs');
 const config = require('./config');
 
-// the server should respond to all requests with a string
-const server = http.createServer((req, res) => {
-  const baseURL = 'http://localhost:4500';
+// instantiate HTTP server
+const httpServer = http.createServer((req, res) => {
+  unifiedServer(req, res);
+});
 
+// start the HTTP server
+httpServer.listen(config.httpPort, _ =>
+  console.log(`server in ${config.envName} ONLINE on port ${config.httpPort}`)
+);
+
+// instantiate HTTPS server
+const httpsServerOptions = {
+  key: fs.readFileSync('./https/key.pem'),
+  cert: fs.readFileSync('./https/cert.pem')
+};
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+  unifiedServer(req, res);
+});
+
+// start HTTPS server
+httpsServer.listen(config.httpsPort, _ => {
+  console.log(`server in ${config.envName} ONLINE on port ${config.httpsPort}`);
+});
+
+// common server logic
+const unifiedServer = (req, res) => {
   // get the url and parse it
+  const baseURL = 'http://localhost:4500';
   const parsedUrl = new URL(req.url, baseURL);
 
   // get the path from the url
@@ -63,11 +89,11 @@ const server = http.createServer((req, res) => {
       // log the path requested
       console.log(
         `trimmedPath: ${trimmedPath},
-        method: ${method},
-        query string: ${queryStringObject},
-        headers: ${JSON.stringify(headers)}
-        statusCode: ${statusCode}
-        payload: ${payloadString}`
+      method: ${method},
+      query string: ${queryStringObject},
+      headers: ${JSON.stringify(headers)}
+      statusCode: ${statusCode}
+      payload: ${payloadString}`
       );
     });
   });
@@ -76,12 +102,7 @@ const server = http.createServer((req, res) => {
     console.error(error.stack);
     res.end('ERROR\n');
   });
-});
-
-// start the server
-server.listen(config.port, _ =>
-  console.log(`server in ${config.envName} ONLINE on port ${config.port}`)
-);
+};
 
 // define router handlers
 const handlers = {};
