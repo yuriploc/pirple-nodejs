@@ -1,4 +1,14 @@
-## Prerequisites
+## What is this?
+
+Some exercises from [Pirple](https://pirple.com/). Each homework assignment is in its branch (eg.: `homework-1`).
+
+It's been hard to not install `nodemon`, but.. :D
+
+## What is the course about
+
+The objective is to write Node.js apps without _any_ npm dependencies (and maybe to see how hard it can be and how good it is to use good 3rd-party open source packages).
+
+**Prerequisites**
 
 * Listen on a PORT and accept incoming HTTP POST, GET, PUT, DELETE, HEAD
 * Allow a client to connect and create, edit, delete user
