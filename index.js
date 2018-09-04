@@ -4,7 +4,7 @@ const { StringDecoder } = require('string_decoder');
 
 // the server should respond to all requests with a string
 const server = http.createServer((req, res) => {
-  const baseURL = 'http://localhost:4500/';
+  const baseURL = 'http://localhost:4500';
 
   // get the url and parse it
   const parsedUrl = new URL(req.url, baseURL);
@@ -24,14 +24,14 @@ const server = http.createServer((req, res) => {
 
   // get the payload, if there is any
   const decoder = new StringDecoder('utf-8');
-  let payload = '';
+  let buffer = '';
 
   req.on('data', data => {
-    payload += decoder.write(data);
+    buffer += decoder.write(data);
   });
 
   req.on('end', _ => {
-    payload += decoder.end();
+    buffer += decoder.end();
 
     // choose the handler's request
     const chosenHandler = router[trimmedPath] || handlers.notFound;
@@ -42,7 +42,7 @@ const server = http.createServer((req, res) => {
       queryStringObject,
       method,
       headers,
-      payload
+      buffer
     };
 
     // route the request to the handler specified
@@ -51,19 +51,20 @@ const server = http.createServer((req, res) => {
       payloadString = JSON.stringify(payload);
 
       // return the response
+      res.setHeader('Content-Type', 'application/json');
       res.writeHead(statusCode);
+      res.end(payloadString);
 
-      res.end('hello there\n');
+      // log the path requested
+      console.log(
+        `trimmedPath: ${trimmedPath},
+        method: ${method},
+        query string: ${queryStringObject},
+        headers: ${JSON.stringify(headers)}
+        statusCode: ${statusCode}
+        payload: ${payloadString}`
+      );
     });
-
-    // log the path requested
-    console.log(
-      `trimmedPath: ${trimmedPath},
-      method: ${method},
-      query string: ${queryStringObject},
-      headers: ${JSON.stringify(headers)}
-      payload: ${payload}`
-    );
   });
 
   req.on('error', error => {
@@ -80,7 +81,6 @@ const handlers = {};
 
 // sample handler
 handlers.sample = (data, callback) => {
-  console.log(`data: ${data}`);
   // callback http status code and a payload object
   callback(406, { name: 'sample handler' });
 };
