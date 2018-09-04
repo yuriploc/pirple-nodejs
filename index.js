@@ -113,7 +113,9 @@ handlers.ping = (data, callback) => {
 };
 
 handlers.hello = (data, callback) => {
-  callback(200, { greeting: 'Hello World' });
+  data.method === 'post'
+    ? callback(200, { greeting: 'Hello World' })
+    : handlers.notFound({}, callback);
 };
 
 // not found handler

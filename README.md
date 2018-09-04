@@ -19,3 +19,11 @@ The objective is to write Node.js apps without _any_ npm dependencies (and maybe
 * A signed-in user can edit/delete their "check"
 * Do the "checking" in background once a minute and send alerts when the "check" changes it state
 * Connect to Twilio to send SMS
+
+## Homework #1
+
+Please create a simple "Hello World" API. Meaning:
+
+1. It should be a RESTful JSON API that listens on a port of your choice.
+
+2. When someone posts anything to the route /hello, you should return a welcome message, in JSON format. This message can be anything you want.
