@@ -34,7 +34,11 @@ const server = http.createServer((req, res) => {
     buffer += decoder.end();
 
     // choose the handler's request
-    const chosenHandler = router[trimmedPath] || handlers.notFound;
+    // const chosenHandler = router[trimmedPath] || handlers.notFound;
+    const chosenHandler =
+      typeof router[trimmedPath] === 'function'
+        ? router[trimmedPath]
+        : handlers.notFound;
 
     // construct the data obj to send to the handler
     const data = {
